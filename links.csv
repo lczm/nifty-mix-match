@@ -1,11 +1,11 @@
-Company , path
-Uniqlo, https://www.uniqlo.com/sg/store/women/outerwear/view-all-outerwear.html
-Uniqlo, https://www.uniqlo.com/sg/store/women/tops/view-all-tops.html
-Uniqlo, https://www.uniqlo.com/sg/store/women/bottoms/view-all-bottoms.html
-Uniqlo, https://www.uniqlo.com/sg/store/women/innerwear/view-all-innerwear.html
-Uniqlo, https://www.uniqlo.com/sg/store/women/homewear-accessories/view-all-homewear-accessories.html
-Uniqlo, https://www.uniqlo.com/sg/store/men/outerwear/view-all-outerwear.html
-Uniqlo, https://www.uniqlo.com/sg/store/men/tops/view-all-tops.html
-Uniqlo, https://www.uniqlo.com/sg/store/men/bottoms/view-all-bottoms.html
-Uniqlo, https://www.uniqlo.com/sg/store/men/innerwear/view-all-innerwear.html
-Uniqlo, https://www.uniqlo.com/sg/store/men/homewear-accessories/view-all-homewear-accessories.html
+Company , Gender, path
+Uniqlo, Women, https://www.uniqlo.com/sg/store/women/outerwear/view-all-outerwear.html
+Uniqlo, Women, https://www.uniqlo.com/sg/store/women/tops/view-all-tops.html
+Uniqlo, Women, https://www.uniqlo.com/sg/store/women/bottoms/view-all-bottoms.html
+Uniqlo, Women, https://www.uniqlo.com/sg/store/women/innerwear/socks-legwear.html
+Uniqlo, Men, https://www.uniqlo.com/sg/store/men/outerwear/view-all-outerwear.html
+Uniqlo, Men, https://www.uniqlo.com/sg/store/men/tops/view-all-tops.html
+Uniqlo, Men, https://www.uniqlo.com/sg/store/men/bottoms/view-all-bottoms.html
+Uniqlo, Men, https://www.uniqlo.com/sg/store/men/innerwear/socks-legwear.html
+Nike, Women, https://www.nike.com/sg/w/womens-lifestyle-shoes-13jrmz5e1x6zy7ok
+Nike, Men, https://www.nike.com/sg/w/mens-lifestyle-shoes-13jrmznik1zy7ok

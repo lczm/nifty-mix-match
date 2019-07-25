@@ -47,7 +47,6 @@ class Helper():
 
         api.add_resource(Image, '/image')
         api.add_resource(Login, '/login')
-
         
     def create_database(self):
         if os.path.isfile('./records.db'):
@@ -62,7 +61,7 @@ class Helper():
             db.create_all()
         
     def login(self, username, password):
-        id = False
+        id = -1
         with app.app_context():
             user = User.query.filter_by(username=username, password=password).all()
             if len(user) == 1:
@@ -138,7 +137,6 @@ class Record(db.Model):
         return str(return_list)
 
 helper = Helper()
-
 def login(username, password):
     return helper.login(username, password)
 
