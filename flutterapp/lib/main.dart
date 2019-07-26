@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:fluttery/layout.dart';
-
-import 'cards.dart';
+import 'package:flutterapp/cards.dart';
+import 'package:flutterapp/profiles.dart';
+import 'matches.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 
 void main() => runApp(new MyApp());
+
+var client = new http.Client();
+
+MatchEngine matchEngine = new MatchEngine(
+  matches: demoProfiles.map((Profile profile) {
+    return new FashionMatch(profile: profile);
+  }).toList(),
+);
 
 class MyApp extends StatelessWidget {
   @override
@@ -72,35 +82,35 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: Icons.refresh,
               iconColor: Colors.orange,
               onPressed: () {
-                // TODO:
+                //TODO:
               },
             ),
             new RoundIconButton.large(
               icon: Icons.clear,
               iconColor: Colors.red,
               onPressed: () {
-                // TODO:
+                matchEngine.currentMatch.one();
               },
             ),
             new RoundIconButton.small(
               icon: Icons.star,
               iconColor: Colors.blue,
               onPressed: () {
-                // TODO:
+                matchEngine.currentMatch.three();
               },
             ),
             new RoundIconButton.large(
               icon: Icons.favorite,
               iconColor: Colors.green,
               onPressed: () {
-                // TODO:
+                matchEngine.currentMatch.five();
               },
             ),
             new RoundIconButton.small(
               icon: Icons.lock,
               iconColor: Colors.purple,
               onPressed: () {
-                // TODO:
+                //TODO:
               },
             ),
           ],
@@ -113,12 +123,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: _buildAppBar(),
-      body: new DraggableCard(),
+      body: new CardStack(
+        matchEngine: matchEngine,
+      ),
       bottomNavigationBar: _buildBottomBar(),
     );
   }
 }
-
 
 class RoundIconButton extends StatelessWidget {
   final IconData icon;
