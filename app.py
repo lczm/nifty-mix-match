@@ -1,4 +1,5 @@
 import os
+import random
 import pandas as pd
 from tqdm import tqdm
 from pprint import pprint
@@ -12,15 +13,19 @@ from flask_restful import Resource, Api
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///records.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# SqlAlchemy
+# Setting up Flask-SqlAlchemy
 db = SQLAlchemy()
 db.init_app(app)
 # Setting up Flask-RESTFUL Api
 api = Api(app)
 
 class Image(Resource):
-    def get(self):
-        return random.choice(dataset['path'])
+    def get(self, category):
+        # if category in helper.dataset.keys():
+        if category in helper.get_categories():
+            category_paths = helper.dataset.loc[helper.dataset['category'] == ' '+category, 'path'].tolist()
+            return category_paths[random.randint(0, len(category_paths))]
+        return -1
 
 class Login(Resource):
     def get(self):
@@ -35,17 +40,16 @@ class Login(Resource):
         password = json_data['password']
 
         return_value = login(username, password)
-
         return return_value
 
 # helper classes
 class Helper():
     def __init__(self):
         assert(os.path.isfile('./paths.csv'))
-        self.dataset = pd.read_csv('./paths.csv')
+        self.dataset = pd.read_csv('./paths.csv', delimiter=" ", quotechar="|")
         self.dataset_paths = self.dataset['path']
 
-        api.add_resource(Image, '/image')
+        api.add_resource(Image, '/image/<string:category>')
         api.add_resource(Login, '/login')
         
     def create_database(self):
@@ -59,6 +63,11 @@ class Helper():
                 return
         with app.app_context():
             db.create_all()
+
+    def get_categories(self):
+        unclean = list(self.dataset.category.unique())
+        clean = [category.replace(' ', '') for category in unclean]
+        return clean
         
     def login(self, username, password):
         id = -1
@@ -77,6 +86,12 @@ class Helper():
             db.session.add(admin)
             db.session.add(guest)
             db.session.add(test)
+            db.session.commit()
+
+    def insert_user(self, username, password):
+        new = User(username=username, password=password)
+        with app.app_context():
+            db.session.add(new)
             db.session.commit()
 
     def delete_fake_users(self):
@@ -137,14 +152,15 @@ class Record(db.Model):
         return str(return_list)
 
 helper = Helper()
+
 def login(username, password):
     return helper.login(username, password)
 
 if __name__ == "__main__":
     # helper.create_database()
     # helper.insert_fake_users()
+    helper.print_all_user_rows()
     # helper.insert_fake_records()
     # helper.print_all_record_rows()
-    # helper.print_all_tables()
-    # helper.print_all_user_rows()
+    helper.print_all_tables()
     app.run(debug=True)

@@ -98,7 +98,7 @@ class Scraper():
         with open('paths.csv', 'w', newline='', encoding='utf-8') as csvfile:
             spamwriter = csv.writer(csvfile, delimiter=' ',
                                     quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            spamwriter.writerow(['company', 'gender', 'title', 'path'])
+            spamwriter.writerow(['company', 'gender', 'category', 'title', 'path'])
             for row in self.dump:
                 spamwriter.writerow(row)
         return 0
