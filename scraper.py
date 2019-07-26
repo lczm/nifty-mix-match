@@ -17,6 +17,7 @@ class Scraper():
         self.companies = []
         self.gender = []
         self.paths = []
+        self.category = []
         self.dump = []
         self.options = Options()
         self.options.headless = True
@@ -31,13 +32,17 @@ class Scraper():
             for row in reader:
                 self.companies.append(row[0])
                 self.gender.append(row[1])
-                self.paths.append(row[2])
+                self.category.append(row[2])
+                self.paths.append(row[3])
 
-    def scrape_uniqlo(self, gender, path):
+    def scrape_uniqlo(self, gender, category, path):
         # for i in tqdm(range(len(self.paths))):
         # self.driver.get(self.paths[i])
         self.driver.get(path)
-        self.driver.implicitly_wait(5)
+        for _ in range(10):
+            self.driver.implicitly_wait(2)
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(5)
         elements = self.driver.find_elements_by_tag_name("img")
         for j in range(len(elements)):
             elements_src = elements[j].get_attribute("data-original")
@@ -47,17 +52,17 @@ class Scraper():
                 path = self.parse_uniqlo_url(elements_src)
                 # data = [self.companies[i], item_id, title, path]
                 # data = ['Uniqlo', item_id, title, path]
-                data = ['Uniqlo', gender, title, path]
+                data = ['Uniqlo', gender, category, title, path]
                 self.dump.append(data)
                 # self.image_paths.append(temp)
-        return data
+        return 0
 
     def parse_uniqlo_url(self, string):
         replaced_string = 'https:' + string
         replaced_string = replaced_string.replace("medium1", "large")
         return replaced_string
 
-    def scrape_nike(self, gender, path):
+    def scrape_nike(self, gender, category, path):
         self.driver.get(path)
         for _ in range(10):
             self.driver.implicitly_wait(2)
@@ -68,7 +73,7 @@ class Scraper():
             image = elements[i].find_element_by_tag_name("img")
             path = image.get_attribute('src')
             title = image.get_attribute('alt')
-            data = ['Nike', gender, title, path]
+            data = ['Nike', gender, category, title, path]
             self.dump.append(data)
         return 0
 
@@ -83,9 +88,9 @@ class Scraper():
         assert(len(self.companies) == len(self.paths))
         for i in tqdm(range(len(self.companies))):
             if self.companies[i] == 'Uniqlo':
-                self.scrape_uniqlo(self.gender[i], self.paths[i])
+                self.scrape_uniqlo(self.gender[i], self.category[i], self.paths[i])
             elif self.companies[i] == 'Nike':
-                self.scrape_nike(self.gender[i], self.paths[i])
+                self.scrape_nike(self.gender[i], self.category[i], self.paths[i])
         return 0
 
     def dump_csv(self):
