@@ -11,11 +11,11 @@ from flask_restful import Resource, Api
 # from routes import Image, Login
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///records.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///records.db'
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Setting up Flask-SqlAlchemy
-db = SQLAlchemy()
-db.init_app(app)
+# db = SQLAlchemy()
+# db.init_app(app)
 # Setting up Flask-RESTFUL Api
 api = Api(app)
 
@@ -205,8 +205,8 @@ def login(username, password):
 if __name__ == "__main__":
     # helper.create_database()
     # helper.insert_fake_users()
-    helper.print_all_user_rows()
+    # helper.print_all_user_rows()
     # helper.insert_fake_records()
     # helper.print_all_record_rows()
-    helper.print_all_tables()
+    # helper.print_all_tables()
     app.run(debug=True)
