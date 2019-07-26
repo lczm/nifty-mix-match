@@ -46,13 +46,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  fluttery:
+  fluttery_dart2:
     dependency: "direct main"
     description:
-      name: fluttery
+      name: fluttery_dart2
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.8"
+    version: "0.0.9"
   http:
     dependency: "direct main"
     description:
