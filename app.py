@@ -26,7 +26,7 @@ class Image(Resource):
             return random.choice(helper.dataset['path'])
         if category in helper.get_categories():
             category_paths = helper.dataset.loc[helper.dataset['category'] == ' '+category, 'path'].tolist()
-            return category_paths[random.randint(0, len(category_paths))]
+            return {'url' : category_paths[random.randint(0, len(category_paths))]}
         return -1
 
 class GetAll(Resource):
