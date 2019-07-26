@@ -1,6 +1,7 @@
 import os
 import re
 import csv
+import time
 import requests
 
 from tqdm import tqdm
@@ -13,9 +14,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 class Scraper():
     def __init__(self):
-        self.company = []
+        self.companies = []
+        self.gender = []
         self.paths = []
-        self.image_paths = []
+        self.category = []
+        self.dump = []
         self.options = Options()
         self.options.headless = True
         self.driver = webdriver.Firefox(options=self.options)
@@ -27,22 +30,31 @@ class Scraper():
             reader = csv.reader(file, delimiter=',', quotechar='|')
             next(reader, None)
             for row in reader:
-                self.company.append(row[0])
-                self.paths.append(row[1])
+                self.companies.append(row[0])
+                self.gender.append(row[1])
+                self.category.append(row[2])
+                self.paths.append(row[3])
 
-    def test_selenium(self):
-        for i in tqdm(range(len(self.paths))):
-            self.driver.get(self.paths[i])
+    def scrape_uniqlo(self, gender, category, path):
+        # for i in tqdm(range(len(self.paths))):
+        # self.driver.get(self.paths[i])
+        self.driver.get(path)
+        for _ in range(10):
             self.driver.implicitly_wait(2)
-            elements = self.driver.find_elements_by_tag_name("img")
-            for j in range(len(elements)):
-                elements_src = elements[j].get_attribute("data-original")
-                if elements_src != None and '.jpg' in elements_src:
-                    item_id = elements_src[-10:-4]
-                    title = elements[j].get_attribute("alt")
-                    path = self.parse_uniqlo_url(elements_src)
-                    temp = [self.company[i], item_id, title, path]
-                    self.image_paths.append(temp)
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(5)
+        elements = self.driver.find_elements_by_tag_name("img")
+        for j in range(len(elements)):
+            elements_src = elements[j].get_attribute("data-original")
+            if elements_src != None and '.jpg' in elements_src:
+                item_id = elements_src[-10:-4]
+                title = elements[j].get_attribute("alt")
+                path = self.parse_uniqlo_url(elements_src)
+                # data = [self.companies[i], item_id, title, path]
+                # data = ['Uniqlo', item_id, title, path]
+                data = ['Uniqlo', gender, category, title, path]
+                self.dump.append(data)
+                # self.image_paths.append(temp)
         return 0
 
     def parse_uniqlo_url(self, string):
@@ -50,30 +62,53 @@ class Scraper():
         replaced_string = replaced_string.replace("medium1", "large")
         return replaced_string
 
+    def scrape_nike(self, gender, category, path):
+        self.driver.get(path)
+        for _ in range(10):
+            self.driver.implicitly_wait(2)
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(5)
+        elements = self.driver.find_elements_by_tag_name("picture")
+        for i in range(len(elements)):
+            image = elements[i].find_element_by_tag_name("img")
+            path = image.get_attribute('src')
+            title = image.get_attribute('alt')
+            data = ['Nike', gender, category, title, path]
+            self.dump.append(data)
+        return 0
+
     def parse_html(self):
         text = "Test"
         soup = BeautifulSoup(text, 'html.parser')
         print(soup.prettify())
         return 0
 
+    # use dump_csv after scrape_all() 
+    def scrape_all(self):
+        assert(len(self.companies) == len(self.paths))
+        for i in tqdm(range(len(self.companies))):
+            if self.companies[i] == 'Uniqlo':
+                self.scrape_uniqlo(self.gender[i], self.category[i], self.paths[i])
+            elif self.companies[i] == 'Nike':
+                self.scrape_nike(self.gender[i], self.category[i], self.paths[i])
+        return 0
+
     def dump_csv(self):
-        assert(len(self.image_paths) > 0)
-        with open('paths.csv', 'w', newline='') as csvfile:
-            spamwriter = csv.writer(csvfile, delimiter=',',
+        assert(len(self.dump) > 0)
+        with open('paths.csv', 'w', newline='', encoding='utf-8') as csvfile:
+            spamwriter = csv.writer(csvfile, delimiter=' ',
                                     quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            spamwriter.writerow(['company', 'itemid', 'title', 'path'])
-            for row in self.image_paths:
+            spamwriter.writerow(['company', 'gender', 'category', 'title', 'path'])
+            for row in self.dump:
                 spamwriter.writerow(row)
         return 0
 
-
-def test():
-    scraper = Scraper()
-    scraper.add_paths()
-    scraper.test_selenium()
-    scraper.dump_csv()
-    # scraper.scrape()
-    return 0
+    def add_item_id(self):
+        assert(os.path.isfile('./paths.csv'))
+        return 0
 
 if __name__ == "__main__":
-    test()
+    scraper = Scraper()
+    scraper.add_paths()
+    scraper.scrape_all()
+    scraper.dump_csv()

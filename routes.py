@@ -8,10 +8,21 @@ from flask_restful import Resource
 dataset = pd.read_csv('./paths.csv')
 dataset_paths = dataset['path']
 
-class Image(Resource):
+class Shirt(Resource):
     def get(self):
         return random.choice(dataset['path'])
 
+class Pants(Resource):
+    def get(self):
+        return random.choice(dataset['path'])
+
+class Socks(Resource):
+    def get(self):
+        return random.choice(dataset['path'])
+
+class Shoes(Resource):
+    def get(self):
+        return random.choice(dataset['path'])
 
 class Login(Resource):
     def get(self):
