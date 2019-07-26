@@ -103,6 +103,10 @@ class Scraper():
                 spamwriter.writerow(row)
         return 0
 
+    def add_item_id(self):
+        assert(os.path.isfile('./paths.csv'))
+        return 0
+
 if __name__ == "__main__":
     scraper = Scraper()
     scraper.add_paths()

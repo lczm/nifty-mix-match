@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 
@@ -7,6 +8,14 @@ from keras.models import Model, load_model
 from keras.layers import Input, Embedding, Flatten, Dot, Dense
 
 from sklearn.model_selection import train_test_split
+
+class NotRealData():
+    def __init__(self):
+        if not os.path.isfile('./notrealdata.csv'):
+            self.generate()
+
+    def generate(self):
+        return 0
 
 class Recommender():
     def __init__(self):
@@ -109,11 +118,10 @@ class BookRecommender():
 
 
 
-
 if __name__ == "__main__":
     recommender = BookRecommender()
-    # recommender.build_model()
-    # recommender.train_model()
+    recommender.build_model()
+    recommender.train_model()
     # recommender.save_model()
-    recommender.load_model()
-    recommender.predict()
+    # recommender.load_model()
+    # recommender.predict()

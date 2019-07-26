@@ -22,6 +22,8 @@ api = Api(app)
 class Image(Resource):
     def get(self, category):
         # if category in helper.dataset.keys():
+        if category == 'all':
+            return random.choice(helper.dataset['path'])
         if category in helper.get_categories():
             category_paths = helper.dataset.loc[helper.dataset['category'] == ' '+category, 'path'].tolist()
             return category_paths[random.randint(0, len(category_paths))]
