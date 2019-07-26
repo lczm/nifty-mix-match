@@ -3,10 +3,12 @@ import re
 import csv
 import time
 import requests
+import pandas as pd
 
 from tqdm import tqdm
 from pprint import pprint
 from bs4 import BeautifulSoup
+
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
@@ -96,19 +98,31 @@ class Scraper():
     def dump_csv(self):
         assert(len(self.dump) > 0)
         with open('paths.csv', 'w', newline='', encoding='utf-8') as csvfile:
-            spamwriter = csv.writer(csvfile, delimiter=' ',
+            csvwriter = csv.writer(csvfile, delimiter=' ',
                                     quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            spamwriter.writerow(['company', 'gender', 'category', 'title', 'path'])
+            csvwriter.writerow(['company', 'gender', 'category', 'title', 'path', 'itemid'])
+            ids = [i for i in range(len(self.dump))]
+            for i in range(len(self.dump)):
+                self.dump[i].append(ids)
             for row in self.dump:
-                spamwriter.writerow(row)
+                csvwriter.writerow(row)
         return 0
 
     def add_item_id(self):
         assert(os.path.isfile('./paths.csv'))
+            # csvwriter = csv.writer(csvfile, delimiter=' ',
+            #                         quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        df = pd.read_csv('./paths.csv', delimiter=' ', quotechar='|')
+        df.drop(['itemid'], axis=1)
+        # df.assign('itemid' = [i for i in range(len(df))])
+        df['itemid'] = [i for i in range(len(df))]
+        df.to_csv('paths.csv', index=False, encoding='utf-8')
         return 0
 
 if __name__ == "__main__":
-    scraper = Scraper()
-    scraper.add_paths()
-    scraper.scrape_all()
-    scraper.dump_csv()
+    # scraper = Scraper()
+    # scraper.add_paths()
+    # scraper.scrape_all()
+    # scraper.dump_csv()
+
+    # scraper.add_item_id()

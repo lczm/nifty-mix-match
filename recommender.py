@@ -11,10 +11,13 @@ from sklearn.model_selection import train_test_split
 
 class NotRealData():
     def __init__(self):
+        assert(os.path.isfile('./paths.csv'))
         if not os.path.isfile('./notrealdata.csv'):
             self.generate()
 
     def generate(self):
+        df = pd.read_csv('./paths.csv')
+        print(df.head())
         return 0
 
 class Recommender():
@@ -119,9 +122,12 @@ class BookRecommender():
 
 
 if __name__ == "__main__":
-    recommender = BookRecommender()
-    recommender.build_model()
-    recommender.train_model()
+    # recommender = BookRecommender()
+    # recommender.build_model()
+    # recommender.train_model()
     # recommender.save_model()
     # recommender.load_model()
     # recommender.predict()
+
+    # NotRealData().generate()
+    NotRealData()

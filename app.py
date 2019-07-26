@@ -29,6 +29,47 @@ class Image(Resource):
             return category_paths[random.randint(0, len(category_paths))]
         return -1
 
+class GetAll(Resource):
+    def get(self):
+        print(helper.dataset.keys())
+        return_all = {}
+        category = helper.dataset['category'].tolist()
+        title = helper.dataset['title'].tolist()
+        path = helper.dataset['path'].tolist()
+        itemid = helper.dataset['itemid'].tolist()
+
+        for i in range(len(itemid)):
+            return_all[str(itemid[i])] = [category[i], title[i], path[i]]
+
+        return return_all
+
+class GetGender(Resource):
+    def get(self, gender):
+        if gender == 'male' or gender == 'Male':
+            return_all = {}
+            # category = helper.dataset[helper.dataset['category'] & helper.dataset['gender'] == ' Male']
+            category = helper.dataset.loc[helper.dataset['gender'] == ' Men']['category'].tolist()
+            title = helper.dataset.loc[helper.dataset['gender'] == ' Men']['title'].tolist()
+            path = helper.dataset.loc[helper.dataset['gender'] == ' Men']['path'].tolist()
+            itemid = helper.dataset.loc[helper.dataset['gender'] == ' Men']['itemid'].tolist()
+
+            for i in range(len(itemid)):
+                return_all[str(itemid[i])] = [category[i], title[i], path[i]]
+            return return_all
+
+        if gender == 'female' or gender == 'Female':
+            return_all = {}
+            # category = helper.dataset[helper.dataset['category'] & helper.dataset['gender'] == ' Male']
+            category = helper.dataset.loc[helper.dataset['gender'] == ' Women']['category'].tolist()
+            title = helper.dataset.loc[helper.dataset['gender'] == ' Women']['title'].tolist()
+            path = helper.dataset.loc[helper.dataset['gender'] == ' Women']['path'].tolist()
+            itemid = helper.dataset.loc[helper.dataset['gender'] == ' Women']['itemid'].tolist()
+            for i in range(len(itemid)):
+                return_all[str(itemid[i])] = [category[i], title[i], path[i]]
+            return return_all
+
+        return -1
+
 class Login(Resource):
     def get(self):
         return "Do not try to get Login"
@@ -48,11 +89,14 @@ class Login(Resource):
 class Helper():
     def __init__(self):
         assert(os.path.isfile('./paths.csv'))
-        self.dataset = pd.read_csv('./paths.csv', delimiter=" ", quotechar="|")
+        # self.dataset = pd.read_csv('./paths.csv', delimiter=" ", quotechar="|")
+        self.dataset = pd.read_csv('./paths.csv')
         self.dataset_paths = self.dataset['path']
 
         api.add_resource(Image, '/image/<string:category>')
         api.add_resource(Login, '/login')
+        api.add_resource(GetAll, '/getall')
+        api.add_resource(GetGender, '/getgender/<string:gender>')
         
     def create_database(self):
         if os.path.isfile('./records.db'):
